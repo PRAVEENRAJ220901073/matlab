@@ -1,0 +1,13 @@
+ n=3;
+ a= [0.006 0.01 0.008];
+ b= [7 8 6];
+ c= [600 400 500];
+ pgmax= [400 300 500];
+ pgmin= [100 50 150];
+ k= [1.1 1.2 1.0]
+ for i=1: n
+ flapc(i)=(k(i)*(a(i)*pgmax(i)^2+b(i)*pgmax(i)+c(i)))/pgmax(i);
+ end
+ flapc
+ [FLAPC, IX] = sort(flapc)
+ unit=IX
