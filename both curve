@@ -1,0 +1,31 @@
+data=[0 6 100; 6 8 150; 8 10 350;10 18 300; 18 24 100];
+power=data(:,3);
+Dt=data(:,2)-data(:,1);
+
+Power_Generated=power.*Dt
+total_Power1=sum(Power_Generated)
+total_Power2=power.*Dt;
+DATA=[data(:,1) data(:,2) power];
+
+sum(Dt);
+Average_load=total_Power1/sum(Dt)
+peak_load=max(power);
+Daily_LF=(Average_load/peak_load)*100
+Diversity_factor=(200+100+50+100)/peak_load
+
+L=length(data);
+timeinterval=data(:,1:2);
+t=sort(reshape(timeinterval,1,2*L));
+
+p=zeros(1,2*L);     % ← FIX ADDED (required for plot)
+
+for n=1:L
+    p(2*n-1)=power(n);
+    p(2*n)=power(n);
+end
+
+plot(t,p)
+xlabel('Time')
+ylabel('Power')
+title('Daily Load Curve')
+grid on
