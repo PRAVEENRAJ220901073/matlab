@@ -1,0 +1,70 @@
+clc
+lambda = 18;
+n = 2;
+pd = 100;
+a = [0.04 0.04];
+b = [16 12];
+c = [0 0];
+B = [0.001 -0.0005; -0.0005 0.0024];   % FIXED: must be 2x2 matrix
+delp = 100;
+pg = [25 75];
+
+while delp > 0.001
+    pgprev = [100 100];
+    ppr = [100 100];
+
+    while ppr(1) > 1
+        for i = 1:n
+            if i == 1
+                pg(i) = (lambda - b(i) - (2 * lambda * B(i,i+1) * pg(i+1))) / ...
+                        (2 * (a(i) + (lambda * B(i,i))));
+            else
+                pg(i) = (lambda - b(i) - (2 * lambda * B(n,n-1) * pg(n-1))) / ...
+                        (2 * (a(i) + (lambda * B(i,i))));
+            end
+
+            ppr(i) = pgprev(i) - pg(i);
+            pgprev(i) = pg(i);
+        end
+    end
+
+    PG = 0;
+    for i = 1:n
+        PG = PG + pg(i);
+    end
+
+    for i = 1:n
+        loss(i) = (B(i,i) * (pg(i)^2));
+    end
+
+    totalloss = 2 * pg(1) * pg(2) * B(1,2);
+    for i = 1:n
+        totalloss = totalloss + loss(i);
+    end
+
+    delp = (pd + totalloss) - PG;
+
+    for i = 1:n
+        if i == 1
+            dop(i) = (a(i) + (B(i,i) * b(i)) - (2 * a(i) * B(i,i+1) * pg(i+1))) / ...
+                     (2 * (a(i) + (lambda * B(i,i)))^2);
+        else
+            dop(i) = (a(i) + (B(i,i) * b(i)) - (2 * lambda * B(n,n-1) * pg(n-1))) / ...
+                     (2 * (a(i) + (lambda * B(i,i)))^2);
+        end
+    end
+
+    deldeno = 0;
+    for i = 1:n
+        deldeno = deldeno + dop(i);
+    end
+
+    dellambda = delp / deldeno;
+    lambda = lambda + dellambda;
+
+end
+
+pg
+PG
+totalloss
+lambda
