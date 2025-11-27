@@ -1,0 +1,13 @@
+ data=[0 6 20; 6 10 25; 10 12 30;12 16 25; 16 20 35; 20 24 20];
+ TIMEINTERVAL=data(:,1:2)
+ l=length(data)
+ t=sort(reshape(TIMEINTERVAL,1,2*l))
+ power=data(:,3)
+ for n=1:l
+ p(2*n-1)=power(n)
+ p(2*n)=power(n)
+ end
+ stairs(t,p,LineWidth=0.5)
+xlabel('Time')
+ylabel('Power')
+title('load curve')
